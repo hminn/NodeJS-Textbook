@@ -1,0 +1,17 @@
+{
+  "name": "learn-express",
+  "version": "1.0.0",
+  "description": "Learning ExpressJS",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "hminn",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
