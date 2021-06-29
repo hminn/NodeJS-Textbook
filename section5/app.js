@@ -1,49 +1,57 @@
-const express = require('express');
-const path = require('path');
-const app = express();
+const express = require("express");
+const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const dotenv = require("dotenv");
+const path = require("path");
+const nunjucks = require("nunjucks");
 
-app.set('port', process.env.PORT || 3000);
+dotenv.config();
+const indexRouter = require("./routes");
+const userRouter = require("./routes/user");
+
+const app = express();
+app.set("port", process.env.PORT || 3000);
+app.set("view engine", "html");
+nunjucks.configure("views", {
+	express: app,
+	watch: true,
+});
+
+app.use(morgan("dev"));
+app.use("/", express.static(path.join(__dirname, "public")));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+	session({
+		resave: false,
+		saveUninitialized: false,
+		secret: process.env.COOKIE_SECRET,
+		cookie: {
+			httpOnly: true,
+			secure: false,
+		},
+		name: "session-cookie",
+	})
+);
+
+app.use("/", indexRouter);
+app.use("/user", userRouter);
 
 app.use((req, res, next) => {
-    console.log("모든 요청에 대해서 실행이 됩니다요")
-    next();
-})
-
-app.get('/', (req, res, next) => {
-    if (req.params) {
-        next('route');
-    } else {
-        res.sendFile(path.join(__dirname, 'index.html'));
-        next();
-    }
-}, (req, res) => {
-    console.log("req.params 가 없는 경우");
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-    console.log("req.params 가 있는 경우")
-});
-
-app.post('/', (req, res) => {
-    res.send("Hello Express!");
-})
-
-app.get('/about', (req, res) => {
-    res.send("Hello Express@@ /about");
+	const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+	error.status = 404;
+	next(error);
 });
 
 app.use((err, req, res, next) => {
-    console.log(err);
-    if (err) {
-        console.error(err);
-        res.status(200).send("에러가 났지만 코드는 안알려줘");
-    }
-    else {
-        next()
-    }
-})
+	res.locals.message = err.message;
+	res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
+	res.status(err.status || 500);
+	res.render("error");
+});
 
-app.listen(3000, () => {
-    console.log(app.get('port'), '번 포트에서 대기 중');
-})
+app.listen(app.get("port"), () => {
+	console.log(app.get("port"), "번 포트에서 대기 중");
+});
