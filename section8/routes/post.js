@@ -33,6 +33,21 @@ router.post('/img', isLoggedIn, upload.single('img'), (req, res) => {
   res.json({ url: `/img/${req.file.filename}` });
 });
 
+router.delete('/:twitId/delete', isLoggedIn, async (req, res, next) => {
+  try {
+    const post = Post.findOne({ where : { id : req.params.twitId }});
+    if (post) {
+      await Post.destroy({where : {id : req.params.twitId}});
+      res.send('success');
+    } else {
+      res.status(404).send('No twit');
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 const upload2 = multer();
 router.post('/', isLoggedIn, upload2.none(), async (req, res, next) => {
   try {
