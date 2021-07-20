@@ -42,6 +42,7 @@
             {% if twit.User.id === user.id %}
               <div class="twit-utils">
                 <button class="twit-delete">게시물 삭제</button>
+                <button class="twit-like">좋아요</button>
               </div>
             {% endif %}
           </div>
@@ -108,7 +109,7 @@
     });
     document.querySelectorAll('.twit-delete').forEach(function(tag) {
       tag.addEventListener('click', function() {
-        const twitId = document.querySelector('.twit-id');
+        const twitId = tag.parentNode.parentNode.querySelector('.twit-id');
         if (twitId) {
           if (confirm('게시글을 삭제하시겠습니까?')) {
             axios.delete(`/post/${twitId.value}/delete`)

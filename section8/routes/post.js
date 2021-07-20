@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const { Post, Hashtag } = require('../models');
+const { User, Post, Hashtag } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router()
@@ -35,10 +35,14 @@ router.post('/img', isLoggedIn, upload.single('img'), (req, res) => {
 
 router.delete('/:twitId/delete', isLoggedIn, async (req, res, next) => {
   try {
-    const post = Post.findOne({ where : { id : req.params.twitId }});
+    const post = await Post.findOne({ where : { id : req.params.twitId }});
     if (post) {
-      await Post.destroy({where : {id : req.params.twitId}});
-      res.send('success');
+      if (post.UserId == req.user.id){
+        await Post.destroy({where : {id : req.params.twitId}});
+        res.send('success');
+      } else {
+        res.status(404).send('No permissions');
+      }
     } else {
       res.status(404).send('No twit');
     }
