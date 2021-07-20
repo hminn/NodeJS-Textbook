@@ -45,6 +45,7 @@ module.exports = class User extends Sequelize.Model {
 
   static associate(db) {
     db.User.hasMany(db.Post);
+    db.User.hasMany(db.Domain);
     db.User.belongsToMany(db.User, {
       // foreignKey를 설정한 이유는 누가 팔로워ID 이고, 누가 팔로잉ID 인지 구별해주기 위해서.
       foreignKey: 'followingId',
