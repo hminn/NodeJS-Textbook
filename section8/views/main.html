@@ -39,12 +39,12 @@
             {% if twit.img %}
               <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
             {% endif %}
-            {% if twit.User.id === user.id %}
               <div class="twit-utils">
+                {% if twit.User.id === user.id %}
                 <button class="twit-delete">게시물 삭제</button>
+                {% endif %}
                 <button class="twit-like">좋아요</button>
               </div>
-            {% endif %}
           </div>
         {% endfor %}
       </div>
@@ -120,6 +120,14 @@
                 console.error(err);
               });
           }
+        }
+      });
+    });
+    document.querySelectorAll('.twit-like').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const twitId = tag.parentNode.parentNode.querySelector('.twit-id');
+        if (twitId) {
+
         }
       });
     });
