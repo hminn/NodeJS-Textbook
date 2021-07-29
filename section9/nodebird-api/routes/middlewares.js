@@ -38,14 +38,26 @@ exports.verifyToken = (req, res, next) => {
   }
 };
 
-exports.apiLimiter = new RateLimit({
+exports.apiFreeLimiter = new RateLimit({
   windowMs: 60 * 1000, // 해당 시간 내에
   max: 10, // 최대 max 번까지만 요청 가능
   delayMs: 0, // 요청의 간격은 delayMs 이상
   handler(req, res) {
     res.status(this.statusCode).json({ // code : 429
       code: this.statusCode,
-      message: '1분에 열 번만 요청할 수 있습니다.'
+      message: '무료 사용자는 1분에 열 번만 요청할 수 있습니다.'
+    });
+  },
+});
+
+exports.apiPremiumLimiter = new RateLimit({
+  windowMs: 60 * 1000, // 해당 시간 내에
+  max: 20, // 최대 max 번까지만 요청 가능
+  delayMs: 0, // 요청의 간격은 delayMs 이상
+  handler(req, res) {
+    res.status(this.statusCode).json({ // code : 429
+      code: this.statusCode,
+      message: '유료 사용자는 1분에 스무 번만 요청할 수 있습니다.'
     });
   },
 });
