@@ -4,15 +4,16 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app",
+    "start": "nodemon server",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "NODE_ENV=test jest --coverage"
   },
   "author": "hyeokim",
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.0.6",
-    "nodemon": "^2.0.9"
+    "nodemon": "^2.0.9",
+    "supertest": "^6.1.4"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
